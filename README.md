@@ -1,15 +1,16 @@
-# organizar-eventos-sostenibles
+# organizing-sustainable-events
 
-1. Clonar el repositorio:
+1. Clone the repository::
 ```
-git clone https://github.com/MelissaAyllon/organizar-eventos-sostenibles.git
+git clone https://github.com/MelissaAyllon/organizing-sustainable-events.git
 ```
 
-2. Levantar el proyecto localmente
+2. Set up the project locally:
 ```
-cd organizar-eventos-sostenibles
+cd organizing-sustainable-events
 npm install && npm run build
 composer run dev
 ```
 
-[Documentación oficial de Laravel](https://laravel.com/docs/12.x/installation)
+[Official Laravel Documentation](https://laravel.com/docs/12.x/installation)
+
