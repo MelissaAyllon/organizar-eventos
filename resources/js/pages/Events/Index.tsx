@@ -70,13 +70,22 @@ export default function EventsIndex({ events }: Props) {
   };
 
   const getTypeBadge = (type: string) => {
-    return 'bg-purple-100 text-purple-800';
+    switch (type) {
+      case 'warning':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'error':
+        return 'bg-red-100 text-red-800';
+      case 'success':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-purple-100 text-purple-800';
+    }
   };
 
   return (
     <>
       <Head title="Eventos Sostenibles" />
-      
+
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -111,7 +120,7 @@ export default function EventsIndex({ events }: Props) {
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Tipo de Actividad
@@ -211,7 +220,7 @@ export default function EventsIndex({ events }: Props) {
                       <Calendar className="w-4 h-4 mr-2" />
                       {format(new Date(event.fecha), 'EEEE, d \'de\' MMMM, yyyy', { locale: es })}
                     </div>
-                    
+
                     <div className="flex items-center text-sm text-gray-600">
                       <MapPin className="w-4 h-4 mr-2" />
                       <span className="line-clamp-1">{event.ubicacion}</span>
