@@ -33,13 +33,13 @@ it('can create a comment for an event', function () {
 
     // Then, create a comment for that event
     $comment = Comment::create([
-        'evento_id' => $event->evento_id,
+        'evento_id' => $event->id,
         'contenido' => 'Looking forward to this event!',
     ]);
 
     // Assert that the comment was created in the database
     $this->assertDatabaseHas('comments', [
-        'evento_id' => $event->evento_id,
+        'evento_id' => $event->id,
         'contenido' => 'Looking forward to this event!',
     ]);
 });

@@ -12,6 +12,7 @@ Route::get('/', function () {
 Route::post('/api/comment', [CommentsController::class, 'store']);
 Route::get('/api/comment/{id}', [CommentsController::class, 'show']);
 
+
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');

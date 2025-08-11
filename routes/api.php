@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,10 @@ Route::prefix('faqs')->name('faqs.')->group(function () {
     Route::get('/categorias', [FaqController::class, 'categorias'])->name('categorias');
     Route::get('/categoria/{categoria}', [FaqController::class, 'porCategoria'])->name('porCategoria');
 });
+
+// events
+Route::post('/events', [EventController::class, 'store']);
+Route::get('/events/{id}', [EventController::class, 'show']);
 
 // Rutas protegidas para gestión de FAQ (solo usuarios autenticados)
 Route::middleware(['auth'])->prefix('faqs')->name('faqs.admin.')->group(function () {
