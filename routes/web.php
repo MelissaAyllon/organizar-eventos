@@ -9,6 +9,10 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
+Route::get('/events', function () {
+    return Inertia::render('events');
+});
+
 Route::post('/api/comment', [CommentsController::class, 'store']);
 Route::get('/api/comment/{id}', [CommentsController::class, 'show']);
 
