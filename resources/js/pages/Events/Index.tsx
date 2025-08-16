@@ -96,7 +96,7 @@ export default function EventsIndex({ events }: Props) {
             </p>
           </div>
           <Button asChild>
-            <Link href="/admin/events/create">
+            <Link href="/events/create">
               <Plus className="w-4 h-4 mr-2" />
               Crear Evento
             </Link>
