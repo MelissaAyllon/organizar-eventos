@@ -30,6 +30,7 @@ Route::prefix('faqs')->name('faqs.')->group(function () {
 // events
 Route::post('/events', [EventController::class, 'store']);
 Route::get('/events/{id}', [EventController::class, 'show']);
+Route::get('/events', [EventController::class, 'index']);
 
 // Rutas protegidas para gestión de FAQ (solo usuarios autenticados)
 Route::middleware(['auth'])->prefix('faqs')->name('faqs.admin.')->group(function () {

@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    public function index()
+    {
+        return Event::select(
+            'id','nombre','fecha','ubicacion','descripcion',
+            #'tipo_actividad','organizador','capacidad_maxima','estado'
+        )->latest('fecha')->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      */
