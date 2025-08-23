@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/text-area";
-import { Calendar, MapPin, Pencil, Upload } from "lucide-react";
+import { Calendar, MapPin, Pencil, Tag, Upload } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type EventData = {
   nombre: string;
@@ -12,6 +13,10 @@ type EventData = {
   ubicacion: string;
   descripcion: string;
   imagen?: File | null;
+  tipo_actividad: string;
+  organizador: string;
+  capacidad_maxima: number;
+  estado: "activo" | "inactivo";
 };
 
 interface EventFormProps {
@@ -22,12 +27,16 @@ interface EventFormProps {
 
 export default function Event({ mode, initialData, onSubmit }: EventFormProps) {
   const [formData, setFormData] = useState<EventData>(
-    initialData || {
+    initialData ?? {
       nombre: "",
       fecha: "",
       ubicacion: "",
       descripcion: "",
       imagen: null,
+      tipo_actividad: "",
+      organizador: "",
+      capacidad_maxima: 1,
+      estado: "activo",
     }
   );
 
@@ -47,6 +56,10 @@ export default function Event({ mode, initialData, onSubmit }: EventFormProps) {
     setFormData((p) => ({ ...p, imagen: file }));
     if (file) setPreviewUrl(URL.createObjectURL(file));
     else setPreviewUrl(null);
+  };
+
+  const handleEstadoChange = (value: "activo" | "inactivo") => {
+    setFormData((prev) => ({ ...prev, estado: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -152,6 +165,68 @@ export default function Event({ mode, initialData, onSubmit }: EventFormProps) {
                 />
                 <MapPin className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
+            </div>
+            {/* Organizador (NEW) */}
+            <div>
+              <Label className="mb-1 block">Organizer</Label>
+              <div className="relative">
+                <Input
+                  name="organizador"
+                  value={formData.organizador}
+                  onChange={handleChange}
+                  placeholder="Organizer name"
+                  className="pr-10"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Tipo de actividad (NEW) */}
+            <div className="sm:col-span-1">
+              <Label className="mb-1 block">Activity Type</Label>
+              <div className="relative">
+                <Input
+                  name="tipo_actividad"
+                  value={formData.tipo_actividad}
+                  onChange={handleChange}
+                  placeholder="Workshop, Talk, Meetup…"
+                  className="pr-10"
+                  required
+                />
+                <Tag className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+
+            {/* Capacidad máxima (NEW) */}
+            <div className="sm:col-span-1">
+              <Label className="mb-1 block">Max Capacity</Label>
+              <Input
+                type="number"
+                name="capacidad_maxima"
+                value={formData.capacidad_maxima}
+                onChange={handleChange}
+                min={1}
+                required
+              />
+            </div>
+
+            {/* Estado (NEW) */}
+            <div className="sm:col-span-1">
+              <Label className="mb-1 block">Status</Label>
+              <Select
+                value={formData.estado}
+                onValueChange={(v) =>
+                  handleEstadoChange(v as "activo" | "inactivo")
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="activo">Activo</SelectItem>
+                  <SelectItem value="inactivo">Inactivo</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
