@@ -8,9 +8,9 @@ import { ArrowLeft } from "lucide-react";
 
 interface Comment {
   id: number;
-  usuario: string;
-  texto: string;
-  createdAt?: string;
+  contenido: string;        // ← backend field
+  usuario?: string;         // optional for UI only (not persisted)
+  created_at?: string;      // ← Eloquent timestamp
 }
 
 interface Event {
@@ -29,26 +29,28 @@ interface Props {
 }
 
 export default function EventEdit({ event }: Props) {
-  if (!event) return <p>Evento no encontrado.</p>;
-
   // Estado de edición de campos del evento
   const [editingField, setEditingField] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Event>({ ...event });
+  const [formData, setFormData] = useState<Event>(event ? { ...event } : {} as Event);
 
   // ----- Comentarios (moderación) -----
   // Datos de ejemplo
   const sampleComments: Comment[] = [
-    { id: 1, usuario: "Ana", texto: "✨ Muy buen evento, me encantó la organización." },
-    { id: 2, usuario: "Luis", texto: "📌 Espero que lo repitan el próximo año." },
-    { id: 3, usuario: "María", texto: "👏 Excelente ambiente y actividades." },
-    { id: 4, usuario: "Jorge", texto: "🎶 La música estuvo increíble." },
-    { id: 5, usuario: "Valentina", texto: "🍔 La comida fue deliciosa, gran selección." },
+    { id: 1, usuario: "Ana", contenido: "✨ Muy buen evento, me encantó la organización." },
+    { id: 2, usuario: "Luis", contenido: "📌 Espero que lo repitan el próximo año." },
+    { id: 3, usuario: "María", contenido: "👏 Excelente ambiente y actividades." },
+    { id: 4, usuario: "Jorge", contenido: "🎶 La música estuvo increíble." },
+    { id: 5, usuario: "Valentina", contenido: "🍔 La comida fue deliciosa, gran selección." },
   ];
 
-  const [comments, setComments] = useState<Comment[]>(event.comentarios ?? sampleComments);
+  const [comments, setComments] = useState<Comment[]>(
+    event?.comentarios ?? sampleComments
+  );
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [commentDraft, setCommentDraft] = useState<string>("");
   const [newComment, setNewComment] = useState<string>("");
+
+  if (!event) return <p>Evento no encontrado.</p>;
 
   // Handlers de evento
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -66,7 +68,7 @@ export default function EventEdit({ event }: Props) {
   // ----- Acciones de comentarios -----
   const startEditComment = (c: Comment) => {
     setEditingCommentId(c.id);
-    setCommentDraft(c.texto);
+    setCommentDraft(c.contenido);
   };
 
   const cancelEditComment = () => {
@@ -74,17 +76,44 @@ export default function EventEdit({ event }: Props) {
     setCommentDraft("");
   };
 
-  const saveEditComment = (id: number) => {
-    const texto = commentDraft.trim();
-    if (!texto) return;
+  const addComment = () => {
+    const contenido = newComment.trim();
+    if (!contenido) return;
 
-    // Actualiza en UI
-    setComments((prev) => prev.map((c) => (c.id === id ? { ...c, texto } : c)));
+    // Optimista
+    const temp: Comment = {
+      id: Date.now(),
+      usuario: "Organización",
+      contenido,
+      created_at: new Date().toISOString(),
+    };
+    setComments((prev) => [temp, ...prev]);
+    setNewComment("");
+
+    router.post(
+      "/api/comment",
+      { evento_id: event.id, contenido }, // ← backend expects these names
+      {
+        preserveScroll: true,
+        onError: () => {
+          // rollback si falla
+          setComments((prev) => prev.filter((c) => c.id !== temp.id));
+        },
+        // onSuccess: puedes refetch o reemplazar temp por el creado real
+      }
+    );
+  };
+
+  const saveEditComment = (id: number) => {
+    const contenido = commentDraft.trim();
+    if (!contenido) return;
+
+    // Optimista
+    setComments((prev) => prev.map((c) => (c.id === id ? { ...c, contenido } : c)));
     setEditingCommentId(null);
     setCommentDraft("");
 
-    // Conectar al backend (ejemplo Inertia)
-    // router.patch(route('events.comments.update', { event: event.id, comment: id }), { texto });
+    router.patch(`/api/comment/${id}`, { contenido }, { preserveScroll: true });
   };
 
   const deleteComment = (id: number) => {
@@ -92,24 +121,6 @@ export default function EventEdit({ event }: Props) {
     setComments((prev) => prev.filter((c) => c.id !== id));
     // Conectar al backend
     // router.delete(route('events.comments.destroy', { event: event.id, comment: id }));
-  };
-
-  const addComment = () => {
-    const texto = newComment.trim();
-    if (!texto) return;
-
-    const nuevo: Comment = {
-      id: Date.now(),
-      usuario: "Organización", // o el usuario autenticado
-      texto,
-      createdAt: new Date().toISOString(),
-    };
-
-    setComments((prev) => [nuevo, ...prev]);
-    setNewComment("");
-
-    // Conectar al backend
-    // router.post(route('events.comments.store', { event: event.id }), { texto });
   };
 
   // Estilos de botones “bonitos”
@@ -360,17 +371,17 @@ export default function EventEdit({ event }: Props) {
                 return (
                   <div key={c.id} className="p-3 bg-gray-50 border rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="text-sm text-gray-700 font-medium">{c.usuario}</div>
-                      {c.createdAt && (
+                    <div className="text-sm text-gray-700 font-medium">{c.usuario ?? "—"}</div>
+                      {c.created_at && (
                         <div className="text-xs text-gray-500">
-                          {format(parseISO(c.createdAt), "yyyy-MM-dd HH:mm")}
+                          {format(new Date(c.created_at.replace(" ", "T")), "yyyy-MM-dd HH:mm")}
                         </div>
                       )}
                     </div>
 
                     {/* Cuerpo / edición */}
                     {!isEditing ? (
-                      <p className="text-sm text-gray-800 whitespace-pre-wrap">{c.texto}</p>
+                      <p className="text-sm text-gray-800 whitespace-pre-wrap">{c.contenido}</p>
                     ) : (
                       <textarea
                         value={commentDraft}
