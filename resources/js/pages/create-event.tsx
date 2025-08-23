@@ -5,7 +5,7 @@ import React, { useState } from "react";
 export default function CreateEvent() {
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: unknown) => {
     try {
       const response = await fetch("/api/events", {
         method: "POST",
@@ -26,7 +26,8 @@ export default function CreateEvent() {
         preserveState: false,
       });
     } catch (error) {
-      setError("No se pudo crear el evento. Intenta nuevamente.");
+        console.error("Error creating event:", error); // Log the error
+        setError("Failed to create event. Please try again.");
     }
   };
 
