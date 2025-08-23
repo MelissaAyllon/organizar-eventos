@@ -19,6 +19,7 @@ Route::get('/events/create', function () {
 });
 
 Route::post('/api/comment', [CommentsController::class, 'store']);
+Route::patch('/api/comment/{id}', [CommentsController::class, 'update']);
 Route::get('/api/comment/{id}', [CommentsController::class, 'show']);
 
 
