@@ -29,7 +29,7 @@ class CommentsController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'evento_id' => 'required|integer|exists:eventos,id',
+            'evento_id' => 'required|integer|exists:events,id',
             'contenido' => 'required|string|max:255',
         ]);
 
@@ -75,7 +75,26 @@ class CommentsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validate = $request->validate([
+            'contenido' => 'required|string|max:255',
+        ]);
+
+        $contenido = $validate['contenido'];
+
+        try {
+            $comment = Comment::find($id);
+
+            if (!$comment) {
+                return response()->json(['error' => 'Comentario no encontrado'], 404);
+            }
+
+            $comment->contenido = $contenido;
+            $comment->save();
+
+            return response()->json(['message' => 'Comentario actualizado exitosamente', 'comment' => $comment], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar el comentario', 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**
