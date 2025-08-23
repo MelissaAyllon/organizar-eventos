@@ -17,6 +17,15 @@ class Event extends Model
         'fecha',
         'ubicacion',
         'descripcion',
+        'tipo_actividad',
+        'organizador',
+        'capacidad_maxima',
+        'estado',
+        // 'comments_count' // You can remove this if you don't want it to be mass assignable
+    ];
+
+    protected $attributes = [
+        'comments_count' => 0,
     ];
 
     public function comments(){

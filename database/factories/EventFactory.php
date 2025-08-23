@@ -21,6 +21,11 @@ class EventFactory extends Factory
             'fecha' => $this->faker->date(),
             'ubicacion' => $this->faker->address(),
             'descripcion' => $this->faker->sentence(),
+            'tipo_actividad' => $this->faker->randomElement(['Conferencia', 'Taller', 'Seminario', 'Webinar']),
+            'organizador' => $this->faker->company(),
+            'capacidad_maxima' => $this->faker->numberBetween(50, 500),
+            'estado' => $this->faker->randomElement(['activo', 'inactivo']),
+            'comments_count' => $this->faker->numberBetween(0, 100),
         ];
     }
 }
