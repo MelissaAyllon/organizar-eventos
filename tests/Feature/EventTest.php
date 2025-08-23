@@ -13,6 +13,11 @@ it('can create an event', function () {
         'descripcion' => 'Una muestra de arte con materiales reciclados.',
         'fecha' => now()->addDays(20),
         'ubicacion' => 'Galería de la Ciudad',
+        'tipo_actividad' => 'Exposición',
+        'organizador' => 'Artistas Unidos',
+        'capacidad_maxima' => 100,
+        'estado' => 'activo',
+        'comments_count' => 0
     ]);
 
     // Assert that the event was created in the database
@@ -20,6 +25,11 @@ it('can create an event', function () {
         'nombre' => 'Exposición de Arte Sostenible',
         'descripcion' => 'Una muestra de arte con materiales reciclados.',
         'ubicacion' => 'Galería de la Ciudad',
+        'tipo_actividad' => 'Exposición',
+        'organizador' => 'Artistas Unidos',
+        'capacidad_maxima' => 100,
+        'estado' => 'activo',
+        'comments_count' => 0
     ]);
 });
 
@@ -31,6 +41,11 @@ it('returns an event by id', function () {
         'descripcion' => 'Un evento para explorar las últimas tendencias tecnológicas.',
         'fecha' => now()->addDays(30),
         'ubicacion' => 'Centro de Convenciones',
+        'tipo_actividad' => 'Conferencia',
+        'organizador' => 'Innovación S.A.',
+        'capacidad_maxima' => 200,
+        'estado' => 'activo',
+        'comments_count' => 0
     ]);
 
     // 2. Make a GET request to the event endpoint with the event ID
@@ -42,5 +57,10 @@ it('returns an event by id', function () {
         'nombre' => 'Conferencia de Innovación',
         'descripcion' => 'Un evento para explorar las últimas tendencias tecnológicas.',
         'ubicacion' => 'Centro de Convenciones',
+        'tipo_actividad' => 'Conferencia',
+        'organizador' => 'Innovación S.A.',
+        'capacidad_maxima' => 200,
+        'estado' => 'activo',
+        'comments_count' => 0
     ]);
 });
