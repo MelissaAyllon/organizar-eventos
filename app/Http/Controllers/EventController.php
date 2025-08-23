@@ -11,7 +11,7 @@ class EventController extends Controller
     {
         return Event::select(
             'id','nombre','fecha','ubicacion','descripcion',
-            #'tipo_actividad','organizador','capacidad_maxima','estado'
+            'tipo_actividad','organizador','capacidad_maxima','estado','comments_count'
         )->latest('fecha')->get();
     }
 
@@ -25,6 +25,10 @@ class EventController extends Controller
             'descripcion' => 'required|string',
             'fecha' => 'required|date',
             'ubicacion' => 'required|string|max:255',
+            'tipo_actividad' => 'required|string|max:255',
+            'organizador' => 'required|string|max:255',
+            'capacidad_maxima' => 'required|integer|min:1',
+            'estado' => 'required|string|in:activo,inactivo',
         ]);
 
         $event = Event::create($validatedData);
