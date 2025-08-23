@@ -2,7 +2,7 @@ import React from 'react';
 import EventsIndex from './Events/Index';
 
 const Events: React.FC = () => {
-    const events = [
+    /*const events = [
         {
             id: 1,
             nombre: 'Eco-Conferencia 2025',
@@ -16,7 +16,16 @@ const Events: React.FC = () => {
             comments_count: 5,
         },
         // You can add more mock events here...
-    ];
+    ];*/
+
+    const [events, setEvents] = React.useState([]);
+
+    React.useEffect(() => {
+        fetch('/api/events')
+            .then((res) => res.json())
+            .then((data) => setEvents(data))
+            .catch((err) => console.error('Error fetching events:', err));
+    }, []);
 
     return <EventsIndex events={events} />;
 };
