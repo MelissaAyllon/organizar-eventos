@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, Users, Search, Filter, Plus } from 'lucide-react';
+import { Calendar, MapPin, Users, Search, Filter, Plus, HelpCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -31,9 +31,23 @@ export default function EventsIndex({ events }: Props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [showFaqs, setShowFaqs] = useState(false);
 
   const eventTypes = Array.from(new Set(events.map(event => event.tipo_actividad).filter(Boolean)));
   const eventStatuses = ['activo', 'cancelado', 'completado'];
+
+  const fetchFAQs = async () => {
+    try {
+      const response = await fetch('/api/faqs/public');
+      const data = await response.json();
+      if (data.success) {
+        setFaqs(data.data.slice(0, 3)); // Solo las primeras 3 FAQs
+      }
+    } catch (error) {
+      console.error('Error fetching FAQs:', error);
+    }
+  };
 
   useEffect(() => {
     let filtered = events;
@@ -59,6 +73,10 @@ export default function EventsIndex({ events }: Props) {
 
     setFilteredEvents(filtered);
   }, [events, searchTerm, selectedType, selectedStatus]);
+
+  useEffect(() => {
+    fetchFAQs();
+  }, []);
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -263,6 +281,68 @@ export default function EventsIndex({ events }: Props) {
             ))}
           </div>
         )}
+
+        {/* FAQs Section */}
+        <div className="mt-16">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Preguntas Frecuentes
+            </h2>
+            <p className="text-gray-600">
+              Resolvemos tus dudas sobre eventos sostenibles
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg border p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {faqs.map((faq, index) => (
+                <div key={faq.id} className="text-center">
+                  <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                    <HelpCircle className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-2 line-clamp-2">
+                    {faq.pregunta}
+                  </h3>
+                  <p className="text-sm text-gray-600 line-clamp-3">
+                    {faq.respuesta}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setShowFaqs(!showFaqs)}
+                className="mr-4"
+              >
+                {showFaqs ? 'Ocultar' : 'Ver más'} FAQs
+              </Button>
+              <Button asChild>
+                <Link href="/faqs">
+                  Ver todas las FAQs
+                </Link>
+              </Button>
+            </div>
+
+            {showFaqs && (
+              <div className="mt-6 pt-6 border-t">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {faqs.map((faq) => (
+                    <div key={faq.id} className="bg-gray-50 rounded-lg p-4">
+                      <h4 className="font-medium text-gray-900 mb-2">
+                        {faq.pregunta}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {faq.respuesta}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );

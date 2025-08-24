@@ -16,9 +16,7 @@ use App\Http\Controllers\EventController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 
 // Rutas públicas para FAQ
 Route::prefix('faqs')->name('faqs.')->group(function () {
@@ -32,8 +30,8 @@ Route::post('/events', [EventController::class, 'store']);
 Route::get('/events/{id}', [EventController::class, 'show']);
 Route::get('/events', [EventController::class, 'index']);
 
-// Rutas protegidas para gestión de FAQ (solo usuarios autenticados)
-Route::middleware(['auth'])->prefix('faqs')->name('faqs.admin.')->group(function () {
+// Rutas para gestión de FAQ (públicas)
+Route::prefix('faqs')->name('faqs.admin.')->group(function () {
     Route::get('/', [FaqController::class, 'index'])->name('index');
     Route::post('/', [FaqController::class, 'store'])->name('store');
     Route::get('/{faq}', [FaqController::class, 'show'])->name('show');
