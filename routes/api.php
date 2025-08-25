@@ -16,27 +16,10 @@ use App\Http\Controllers\EventController;
 |
 */
 
-
-
-// Rutas públicas para FAQ
-Route::prefix('faqs')->name('faqs.')->group(function () {
-    Route::get('/public', [FaqController::class, 'public'])->name('public');
-    Route::get('/categorias', [FaqController::class, 'categorias'])->name('categorias');
-    Route::get('/categoria/{categoria}', [FaqController::class, 'porCategoria'])->name('porCategoria');
-});
+// Simple FAQ route to get all FAQs for display
+Route::get('/faqs', [FaqController::class, 'index']);
 
 // events
 Route::post('/events', [EventController::class, 'store']);
 Route::get('/events/{id}', [EventController::class, 'show']);
-Route::get('/events', [EventController::class, 'index']);
-
-// Rutas para gestión de FAQ (públicas)
-Route::prefix('faqs')->name('faqs.admin.')->group(function () {
-    Route::get('/', [FaqController::class, 'index'])->name('index');
-    Route::post('/', [FaqController::class, 'store'])->name('store');
-    Route::get('/{faq}', [FaqController::class, 'show'])->name('show');
-    Route::put('/{faq}', [FaqController::class, 'update'])->name('update');
-    Route::delete('/{faq}', [FaqController::class, 'destroy'])->name('destroy');
-    Route::patch('/{faq}/toggle-status', [FaqController::class, 'toggleStatus'])->name('toggleStatus');
-    Route::post('/reordenar', [FaqController::class, 'reordenar'])->name('reordenar');
-}); 
+Route::get('/events', [EventController::class, 'index']); 
