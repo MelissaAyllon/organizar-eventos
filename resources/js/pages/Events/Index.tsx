@@ -39,7 +39,7 @@ export default function EventsIndex({ events }: Props) {
 
   const fetchFAQs = async () => {
     try {
-      const response = await fetch('/api/faqs/public');
+      const response = await fetch('/api/faqs');
       const data = await response.json();
       if (data.success) {
         setFaqs(data.data.slice(0, 9));
