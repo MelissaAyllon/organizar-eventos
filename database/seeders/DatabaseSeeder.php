@@ -24,5 +24,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FaqSeeder::class,
         ]);
+
+        // Ejecutar el seeder de Eventos
+        $this->call([
+            EventSeeder::class,
+        ]);
     }
 }
