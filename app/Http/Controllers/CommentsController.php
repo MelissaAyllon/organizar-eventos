@@ -2,106 +2,117 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Comment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class CommentsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'evento_id' => 'required|integer|exists:events,id',
-            'contenido' => 'required|string|max:255',
-        ]);
-
-        $contenido = $validate['contenido'];
-        $evento_id = $validate['evento_id'];
-
         try {
-            $comment = new Comment;
-            $comment->evento_id = $evento_id;
-            $comment->contenido = $contenido;
-            $comment->save();
+            // Validar los datos
+            $validator = Validator::make($request->all(), [
+                'evento_id' => 'required|integer|exists:events,id',
+                'contenido' => 'required|string|max:1000',
+                'usuario' => 'required|string|max:255',
+            ]);
 
-            return response()->json(['message' => 'Comentario creado exitosamente', 'comment' => $comment], 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al crear el comentario', 'message' => $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {   
-        $comment = Comment::find($id);
-
-        if (!$comment) {
-            return response()->json(['error' => 'Comentario no encontrado'], 404);
-        }
-
-        return response()->json(['comment' => $comment], 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $validate = $request->validate([
-            'contenido' => 'required|string|max:255',
-        ]);
-
-        $contenido = $validate['contenido'];
-
-        try {
-            $comment = Comment::find($id);
-
-            if (!$comment) {
-                return response()->json(['error' => 'Comentario no encontrado'], 404);
+            if ($validator->fails()) {
+                return back()->withErrors([
+                    'comment_error' => 'Datos inválidos: ' . $validator->errors()->first()
+                ]);
             }
 
-            $comment->contenido = $contenido;
-            $comment->save();
+            // Crear el comentario
+            $comment = Comment::create([
+                'evento_id' => $request->evento_id,
+                'contenido' => $request->contenido,
+                'usuario' => $request->usuario,
+                'editado' => false,
+                'activo' => true,
+            ]);
 
-            return response()->json(['message' => 'Comentario actualizado exitosamente', 'comment' => $comment], 200);
+            Log::info('Comentario creado:', ['comment_id' => $comment->id]);
+
+            // Usar back() con mensaje de éxito para Inertia
+            return back()->with('success', 'Comentario publicado exitosamente');
+
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al actualizar el comentario', 'message' => $e->getMessage()], 500);
+            Log::error('Error al crear comentario:', [
+                'error' => $e->getMessage(),
+                'request_data' => $request->all()
+            ]);
+
+            return back()->withErrors([
+                'comment_error' => 'Error al publicar el comentario. Inténtalo nuevamente.'
+            ]);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'contenido' => 'required|string|max:1000',
+            ]);
+
+            if ($validator->fails()) {
+                return back()->withErrors([
+                    'comment_error' => 'Contenido inválido: ' . $validator->errors()->first()
+                ]);
+            }
+
+            $comment = Comment::findOrFail($id);
+            $comment->update([
+                'contenido' => $request->contenido,
+                'editado' => true,
+            ]);
+
+            Log::info('Comentario actualizado:', ['comment_id' => $comment->id]);
+
+            return back()->with('success', 'Comentario actualizado exitosamente');
+
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar comentario:', [
+                'error' => $e->getMessage(),
+                'comment_id' => $id
+            ]);
+
+            return back()->withErrors([
+                'comment_error' => 'Error al actualizar el comentario.'
+            ]);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $comment = Comment::findOrFail($id);
+            
+            // Marcar como inactivo en lugar de eliminar
+            $comment->update(['activo' => false]);
+
+            Log::info('Comentario desactivado:', ['comment_id' => $comment->id]);
+
+            return back()->with('success', 'Comentario desactivado exitosamente');
+
+        } catch (\Exception $e) {
+            Log::error('Error al desactivar comentario:', [
+                'error' => $e->getMessage(),
+                'comment_id' => $id
+            ]);
+
+            return back()->withErrors([
+                'comment_error' => 'Error al desactivar el comentario.'
+            ]);
+        }
+    }
+
+    public function show($id)
+    {
+        $comment = Comment::findOrFail($id);
+        return response()->json($comment);
     }
 }

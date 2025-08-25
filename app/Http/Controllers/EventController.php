@@ -10,8 +10,8 @@ class EventController extends Controller
     public function index()
     {
         return Event::select(
-            'id','nombre','fecha','ubicacion','descripcion',
-            'tipo_actividad','organizador','capacidad_maxima','estado','comments_count'
+            'id','nombre','fecha','hora','ubicacion','descripcion',
+            'tipo_actividad','organizador','capacidad_maxima','estado','imagen','comments_count'
         )->latest('fecha')->get();
     }
 
@@ -20,16 +20,19 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'fecha' => 'required|date',
-            'ubicacion' => 'required|string|max:255',
-            'tipo_actividad' => 'required|string|max:255',
-            'organizador' => 'required|string|max:255',
-            'capacidad_maxima' => 'required|integer|min:1',
-            'estado' => 'required|string|in:activo,inactivo',
-        ]);
+            $validatedData = $request->validate([
+        'nombre' => 'required|string|max:255',
+        'descripcion' => 'required|string',
+        'fecha' => 'required|date',
+        'hora' => 'nullable|string', 
+        'ubicacion' => 'required|string|max:255',
+        'tipo_actividad' => 'required|string|max:255',
+        'organizador' => 'required|string|max:255',
+        'capacidad_maxima' => 'required|integer|min:1',
+        'estado' => 'required|string|in:activo,inactivo',
+        'imagen' => 'nullable|string', // Base64 string
+    ]);
+
 
         $event = Event::create($validatedData);
 
