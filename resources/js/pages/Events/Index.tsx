@@ -42,7 +42,7 @@ export default function EventsIndex({ events }: Props) {
       const response = await fetch('/api/faqs/public');
       const data = await response.json();
       if (data.success) {
-        setFaqs(data.data.slice(0, 3)); // Solo las primeras 3 FAQs
+        setFaqs(data.data.slice(0, 6)); // Solo las primeras 3 FAQs
       }
     } catch (error) {
       console.error('Error fetching FAQs:', error);
@@ -295,7 +295,7 @@ export default function EventsIndex({ events }: Props) {
 
           <div className="bg-white rounded-lg border p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {faqs.map((faq, index) => (
+              {faqs.slice(0, 3).map((faq, index) => (
                 <div key={faq.id} className="text-center">
                   <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                     <HelpCircle className="w-6 h-6 text-green-600" />
@@ -319,8 +319,8 @@ export default function EventsIndex({ events }: Props) {
                 {showFaqs ? 'Ocultar' : 'Ver más'} FAQs
               </Button>
               <Button asChild>
-                <Link href="/faqs">
-                  Ver todas las FAQs
+                <Link href="/events">
+                  Ver Eventos
                 </Link>
               </Button>
             </div>
@@ -328,7 +328,7 @@ export default function EventsIndex({ events }: Props) {
             {showFaqs && (
               <div className="mt-6 pt-6 border-t">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {faqs.map((faq) => (
+                  {faqs.slice(3).map((faq) => (
                     <div key={faq.id} className="bg-gray-50 rounded-lg p-4">
                       <h4 className="font-medium text-gray-900 mb-2">
                         {faq.pregunta}
