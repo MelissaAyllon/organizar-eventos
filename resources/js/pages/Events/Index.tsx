@@ -31,11 +31,11 @@ export default function EventsIndex({ events }: Props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [faqs, setFaqs] = useState<Array<{id: number; pregunta: string; respuesta: string}>>([]);
+  const [faqs, setFaqs] = useState<Array<{ id: number; pregunta: string; respuesta: string }>>([]);
   const [showFaqs, setShowFaqs] = useState(false);
 
   const eventTypes = Array.from(new Set(events.map(event => event.tipo_actividad).filter(Boolean)));
-  const eventStatuses = ['activo', 'cancelado', 'completado'];
+  const eventStatuses = ['activo', 'inactivo', 'cancelado', 'completado'];
 
   const fetchFAQs = async () => {
     try {
@@ -81,6 +81,7 @@ export default function EventsIndex({ events }: Props) {
   const getStatusBadge = (status: string) => {
     const variants = {
       activo: 'bg-green-100 text-green-800',
+      inactivo: 'bg-green-100 text-green-800',
       cancelado: 'bg-red-100 text-red-800',
       completado: 'bg-blue-100 text-blue-800'
     };

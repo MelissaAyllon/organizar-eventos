@@ -57,15 +57,15 @@ export default function Event({ mode, initialData, onSubmit }: EventFormProps) {
   const validateImage = (file: File): string | null => {
     const maxSize = 5 * 1024 * 1024; // 5MB
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-    
+
     if (!allowedTypes.includes(file.type)) {
       return "Solo se permiten archivos de imagen (PNG, JPG, JPEG, GIF)";
     }
-    
+
     if (file.size > maxSize) {
       return "El archivo debe ser menor a 5MB";
     }
-    
+
     return null;
   };
 
@@ -81,7 +81,7 @@ export default function Event({ mode, initialData, onSubmit }: EventFormProps) {
   const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setImageError("");
-    
+
     if (!file) {
       setFormData((prev) => ({ ...prev, imagen: null }));
       setPreviewUrl(null);
@@ -111,7 +111,7 @@ export default function Event({ mode, initialData, onSubmit }: EventFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validar campos requeridos
     if (!formData.nombre || !formData.fecha || !formData.ubicacion || !formData.descripcion) {
       alert("Por favor completa todos los campos requeridos");

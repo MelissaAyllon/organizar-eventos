@@ -61,41 +61,41 @@ export default function EventDetails({ event, auth }: Props) {
   const displayed = showAllComments ? comentarios : comentarios.slice(0, VISIBLE_COMMENTS);
 
   const handlePublishComment = () => {
-  const contenido = newComment.trim();
-  if (!contenido || isSubmitting) return;
+    const contenido = newComment.trim();
+    if (!contenido || isSubmitting) return;
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  // Enviar comentario al backend con los campos correctos
-  router.post('/comments', {
-    evento_id: event.id,
-    contenido: contenido,
-    usuario: auth?.user?.name || 'Usuario Anónimo'
-  }, {
-    preserveScroll: true,
-    onSuccess: () => {
-      console.log('Comentario publicado exitosamente');
-      setNewComment(""); // Limpiar el campo
-      setIsSubmitting(false);
-    },
-    onError: (errors) => {
-      console.error('Error al publicar comentario:', errors);
-      setIsSubmitting(false);
-      
-      // Mostrar error al usuario
-      if (errors.comment_error) {
-        alert(errors.comment_error);
-      } else if (errors.error) {
-        alert(errors.error);
-      } else {
-        alert('Error al publicar comentario');
+    // Enviar comentario al backend con los campos correctos
+    router.post('/comments', {
+      evento_id: event.id,
+      contenido: contenido,
+      usuario: auth?.user?.name || 'Usuario Anónimo'
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        console.log('Comentario publicado exitosamente');
+        setNewComment(""); // Limpiar el campo
+        setIsSubmitting(false);
+      },
+      onError: (errors) => {
+        console.error('Error al publicar comentario:', errors);
+        setIsSubmitting(false);
+
+        // Mostrar error al usuario
+        if (errors.comment_error) {
+          alert(errors.comment_error);
+        } else if (errors.error) {
+          alert(errors.error);
+        } else {
+          alert('Error al publicar comentario');
+        }
+      },
+      onFinish: () => {
+        setIsSubmitting(false);
       }
-    },
-    onFinish: () => {
-      setIsSubmitting(false);
-    }
-  });
-};
+    });
+  };
 
   const formatCommentDate = (dateString: string) => {
     try {
@@ -130,13 +130,12 @@ export default function EventDetails({ event, auth }: Props) {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Volver
         </Link>
-        
+
         {/* Badge de estado */}
-        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-          event.estado === 'activo' 
-            ? 'bg-green-100 text-green-800' 
+        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${event.estado === 'activo'
+            ? 'bg-green-100 text-green-800'
             : 'bg-red-100 text-red-800'
-        }`}>
+          }`}>
           {event.estado === 'activo' ? '● Activo' : '● Inactivo'}
         </div>
       </div>
@@ -306,7 +305,7 @@ export default function EventDetails({ event, auth }: Props) {
                       </button>
                     )}
 
-                    <button 
+                    <button
                       className={btnPrimary}
                       onClick={handlePublishComment}
                       disabled={isSubmitting || !newComment.trim()}
