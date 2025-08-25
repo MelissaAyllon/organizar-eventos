@@ -31,7 +31,7 @@ export default function EventsIndex({ events }: Props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [faqs, setFaqs] = useState<any[]>([]);
+  const [faqs, setFaqs] = useState<Array<{id: number; pregunta: string; respuesta: string}>>([]);
   const [showFaqs, setShowFaqs] = useState(false);
 
   const eventTypes = Array.from(new Set(events.map(event => event.tipo_actividad).filter(Boolean)));
@@ -295,7 +295,7 @@ export default function EventsIndex({ events }: Props) {
 
           <div className="bg-white rounded-lg border p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {faqs.slice(0, 3).map((faq, index) => (
+              {faqs.slice(0, 3).map((faq) => (
                 <div key={faq.id} className="text-center">
                   <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
                     <HelpCircle className="w-6 h-6 text-green-600" />
