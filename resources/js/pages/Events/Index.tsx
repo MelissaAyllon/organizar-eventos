@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Users, Search, Filter, Plus, HelpCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import AddFaqForm from '@/components/AddFaqForm';
 
 interface Event {
   id: number;
@@ -306,15 +307,16 @@ export default function EventsIndex({ events }: Props) {
               ))}
             </div>
 
-            <div className="text-center mt-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
               <Button
                 variant="outline"
                 onClick={() => setShowFaqs(!showFaqs)}
-                className="mr-4"
+                className="w-full sm:w-auto"
               >
                 {showFaqs ? 'Ocultar' : 'Ver más'} FAQs
               </Button>
-              <Button asChild>
+              <AddFaqForm onFaqAdded={fetchFAQs} />
+              <Button asChild className="w-full sm:w-auto">
                 <Link href="/events">
                   Ver Eventos
                 </Link>

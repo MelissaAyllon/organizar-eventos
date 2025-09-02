@@ -20,4 +20,26 @@ class FaqController extends Controller
             'data' => $faqs
         ]);
     }
+
+    /**
+     * Store a newly created FAQ in storage.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $request->validate([
+            'pregunta' => 'required|string|max:255',
+            'respuesta' => 'required|string|max:1000',
+        ]);
+
+        $faq = Faq::create([
+            'pregunta' => $request->pregunta,
+            'respuesta' => $request->respuesta,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'FAQ creada exitosamente',
+            'data' => $faq
+        ], 201);
+    }
 } 

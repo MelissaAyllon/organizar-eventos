@@ -16,8 +16,9 @@ use App\Http\Controllers\EventController;
 |
 */
 
-// Simple FAQ route to get all FAQs for display
+// FAQ routes
 Route::get('/faqs', [FaqController::class, 'index']);
+Route::post('/faqs', [FaqController::class, 'store']);
 
 // events
 Route::post('/events', [EventController::class, 'store']);
