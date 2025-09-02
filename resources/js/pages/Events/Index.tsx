@@ -35,7 +35,7 @@ export default function EventsIndex({ events }: Props) {
   const [showFaqs, setShowFaqs] = useState(false);
 
   const eventTypes = Array.from(new Set(events.map(event => event.tipo_actividad).filter(Boolean)));
-  const eventStatuses = ['activo', 'inactivo', 'cancelado', 'completado'];
+  const eventStatuses = ['activo', 'inactivo'];
 
   const fetchFAQs = async () => {
     try {
@@ -81,7 +81,7 @@ export default function EventsIndex({ events }: Props) {
   const getStatusBadge = (status: string) => {
     const variants = {
       activo: 'bg-green-100 text-green-800',
-      inactivo: 'bg-green-100 text-green-800',
+      inactivo: 'bg-red-100 text-red-800',
       cancelado: 'bg-red-100 text-red-800',
       completado: 'bg-blue-100 text-blue-800'
     };
@@ -258,11 +258,6 @@ export default function EventsIndex({ events }: Props) {
                       </p>
                     )}
 
-                    {event.comments_count !== undefined && (
-                      <p className="text-sm text-gray-600">
-                        {event.comments_count} comentario{event.comments_count !== 1 ? 's' : ''}
-                      </p>
-                    )}
                   </div>
 
                   <div className="flex gap-2 mt-4">
